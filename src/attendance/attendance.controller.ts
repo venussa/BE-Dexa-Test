@@ -2,17 +2,22 @@ import { Controller, Post, UseGuards } from '@nestjs/common';
 import { AttendanceService } from './attendance.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { User } from '../user/decorators/user.decorator';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @Controller('attendance')
 export class AttendanceController {
   constructor(private readonly attendanceService: AttendanceService) {}
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('USER')
   @Post('checkin')
   async checkIn(@User('id') userId: string) {
     return this.attendanceService.checkIn(userId);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('USER')
   @UseGuards(JwtAuthGuard)
   @Post('checkout')
   async checkOut(@User('id') userId: string) {
