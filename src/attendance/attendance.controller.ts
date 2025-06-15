@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, UseGuards, Query } from '@nestjs/common';
 import { AttendanceService } from './attendance.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { User } from '../user/decorators/user.decorator';
@@ -22,5 +22,11 @@ export class AttendanceController {
   @Post('checkout')
   async checkOut(@User('id') userId: string) {
     return this.attendanceService.checkOut(userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('history')
+  getHistory(@User() user, @Query() query: any) {
+    return this.attendanceService.getHistory(user, query);
   }
 }

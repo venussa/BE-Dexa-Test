@@ -67,4 +67,36 @@ export class AttendanceService {
 
     return this.attendanceRepo.save(attendance);
   }
+
+  async getHistory(user: any, query: any) {
+    const { page = 1, perPage = 10, date, startDate, endDate, userId } = query;
+    const take = +perPage;
+    const skip = (+page - 1) * take;
+
+    const where: any = {};
+
+    if (user.role !== 'ADMIN') {
+      where.user = { id: user.id };
+    } else if (userId) {
+      where.user = { id: userId };
+    }
+
+    if (date) {
+      const d = new Date(date);
+      where.timestamp = Between(startOfDay(d), endOfDay(d));
+    } else if (startDate && endDate) {
+      where.timestamp = Between(new Date(startDate), new Date(endDate));
+    }
+
+    const [data, total] = await this.attendanceRepo.findAndCount({
+      where, take, skip, relations: ['user'], order: { timestamp: 'DESC' }
+    });
+
+    return {
+      currentPage: +page,
+      perPage: take,
+      total,
+      data,
+    };
+  }
 }
