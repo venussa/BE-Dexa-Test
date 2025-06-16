@@ -29,4 +29,10 @@ export class AttendanceController {
   getHistory(@User() user, @Query() query: any) {
     return this.attendanceService.getHistory(user, query);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('summary')
+  getSummary(@User() user, @Query() query: any) {
+    return this.attendanceService.getSummary(user, query);
+  }
 }

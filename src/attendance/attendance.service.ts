@@ -1,13 +1,18 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, Repository } from 'typeorm';
+import { In, Between, Repository } from 'typeorm';
 import { startOfDay, endOfDay } from 'date-fns';
 import { Attendance } from './attendance.entity';
+import { User } from '../user/user.entity';
+import { format, startOfMonth, endOfMonth } from 'date-fns';
 @Injectable()
 export class AttendanceService {
   constructor(
     @InjectRepository(Attendance)
     private attendanceRepo: Repository<Attendance>,
+
+    @InjectRepository(User)
+    private userRepo: Repository<User>,
   ) {}
 
   async checkIn(userId: string) {
@@ -109,6 +114,7 @@ export class AttendanceService {
             phone: item.user.phone,
             photoUrl: item.user.photoUrl,
           },
+          dateKey,
           checkin: null,
           checkout: null,
         });
@@ -136,6 +142,107 @@ export class AttendanceService {
       perPage: +perPage,
       total,
       data: pagedData,
+    };
+  }
+
+  async getSummary(user: any, query: any) {
+
+    const { page = 1, perPage = 10, start, end, userId } = query;
+    const today = new Date();
+    const startDate = start ? new Date(start) : startOfMonth(today);
+    const endDate = end ? new Date(end) : endOfMonth(today);
+    const sortOrder = String(query.sort).toLowerCase() === 'asc' ? 'asc' : 'desc';
+
+    const isAdmin = user.role === 'ADMIN';
+    const skip = (+page - 1) * +perPage;
+    const take = +perPage;
+
+    let users: User[] = [];
+
+    if (isAdmin) {
+      if (userId) {
+        const found = await this.userRepo.findOne({ where: { id: userId } });
+        if (found) users = [found];
+      } else {
+        users = await this.userRepo.find({
+          order: { name: 'ASC' },
+          skip,
+          take,
+        });
+      }
+    } else {
+      const found = await this.userRepo.findOne({ where: { id: user.id } });
+      if (found) users = [found];
+    }
+
+    const filteredUserIds = users.map((u) => u.id);
+    const where: any = {
+      user: { id: In(filteredUserIds) },
+    };
+
+    if (startDate && endDate) {
+      where.timestamp = Between(startOfDay(startDate), endOfDay(endDate));
+    }
+
+    const rawAttendance = await this.attendanceRepo.find({
+      where,
+      relations: ['user'],
+      order: { timestamp: 'ASC' },
+    });
+
+    const summaryMap = new Map<string, any>();
+
+    for (const record of rawAttendance) {
+      const date = format(record.timestamp, 'yyyy-MM-dd');
+      const key = `${record.user.id}-${date}`;
+
+      if (!summaryMap.has(key)) {
+        summaryMap.set(key, {
+          date,
+          checkin: null,
+          checkout: null,
+          userId: record.user.id,
+        });
+      }
+
+      const group = summaryMap.get(key);
+      if (record.type === 'CHECKIN') group.checkin = record.timestamp;
+      if (record.type === 'CHECKOUT') group.checkout = record.timestamp;
+    }
+
+    const data = users.map((u) => {
+      const summary = Array.from(summaryMap.values())
+        .filter((r) => r.userId === u.id)
+        .map(({ date, checkin, checkout }) => ({
+          date,
+          checkin,
+          checkout,
+        }))
+        .sort((a, b) => {
+          if (sortOrder === 'asc') return a.date.localeCompare(b.date);
+          else return b.date.localeCompare(a.date);
+        });
+
+      return {
+        id: u.id,
+        email: u.email,
+        name: u.name,
+        position: u.position,
+        phone: u.phone,
+        photoUrl: u.photoUrl,
+        attendance_summary: summary,
+      };
+    });
+
+    const total = isAdmin && !userId
+      ? await this.userRepo.count()
+      : data.length;
+
+    return {
+      currentPage: +page,
+      perPage: take,
+      total,
+      data,
     };
   }
 }
