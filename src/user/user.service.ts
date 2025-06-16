@@ -145,4 +145,49 @@ export class UserService {
 
         return { message: 'User deleted successfully' };
     }
+
+    async getAllUsers(query: any) {
+        const page = Number(query.page) || 1;
+        const perPage = Number(query.perPage) || 10;
+        const name = query.name?.toLowerCase();
+        const id = query.userId;
+
+        const skip = (page - 1) * perPage;
+        const where: any = {};
+
+        if (id) {
+            where.id = id;
+        }
+
+        const qb = this.userRepo.createQueryBuilder('user')
+            .select([
+                'user.id',
+                'user.email',
+                'user.name',
+                'user.role',
+                'user.phone',
+                'user.position',
+                'user.photoUrl',
+            ])
+            .orderBy('user.createdAt', 'DESC')
+            .skip(skip)
+            .take(perPage)
+
+        if (id) {
+            qb.andWhere('user.id = :id', { id });
+        }
+
+        if (name) {
+            qb.where('LOWER(user.name) LIKE :name', { name: `%${name}%` });
+        }
+
+        const [data, total] = await qb.getManyAndCount();
+
+        return {
+            currentPage: page,
+            perPage,
+            total,
+            data,
+        };
+    }
 }

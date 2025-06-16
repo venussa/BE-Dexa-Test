@@ -1,4 +1,4 @@
-import {  Controller, Get, Patch, Param, Body, UseGuards, Post, Delete } from '@nestjs/common';
+import {  Controller, Get, Patch, Param, Body, UseGuards, Post, Delete, Query } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { User } from './decorators/user.decorator';
 import { UserService } from './user.service';
@@ -44,5 +44,12 @@ export class UserController {
     @Delete('delete/:id')
     async deleteUser(@User() currentUser, @Param('id') id: string) {
         return this.userService.deleteUser(currentUser, id);
+    }
+
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles('ADMIN')
+    @Get()
+    getAllUsers(@Query() query: any) {
+        return this.userService.getAllUsers(query);
     }
 }
