@@ -22,8 +22,7 @@
     "logging:migration:run": "ts-node -r tsconfig-paths/register -r dotenv/config ./node_modules/typeorm/cli.js migration:run -d ./src/log-data-source.ts",
     "application:migration:generate": "ts-node -r tsconfig-paths/register -r dotenv/config ./node_modules/typeorm/cli.js migration:generate -d ./src/data-source.ts ./src/migrations/CreateInitialTables",
     "application:migration:run": "ts-node -r tsconfig-paths/register -r dotenv/config ./node_modules/typeorm/cli.js migration:run -d ./src/data-source.ts",
-    "migration:maindb:run": "npm run application:migration:generate && npm run application:migration:run",
-    "migration:logdb:run": "npm run logging:migration:generate && npm run logging:migration:run"
+    "migration:run": "npm run application:migration:run && npm run logging:migration:run"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
