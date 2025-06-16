@@ -130,4 +130,19 @@ export class UserService {
 
         return this.userRepo.save(user);
     }
+
+    async deleteUser(currentUser: User, targetUserId: string) {
+        if (currentUser.id === targetUserId) {
+            throw new ForbiddenException('You cannot delete your own account');
+        }
+
+        const user = await this.userRepo.findOne({ where: { id: targetUserId } });
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        await this.userRepo.remove(user);
+
+        return { message: 'User deleted successfully' };
+    }
 }
