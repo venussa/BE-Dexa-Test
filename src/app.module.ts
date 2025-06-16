@@ -4,6 +4,7 @@ import { typeOrmModuleConfig } from './config/db.config';
 import { AuthModule } from './auth/auth.module';
 import { AttendanceModule } from './attendance/attendance.module';
 import { UserModule } from './user/user.module';
+import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { UserModule } from './user/user.module';
     AuthModule,
     AttendanceModule,
     UserModule,
+    RabbitmqModule,
   ],
 })
 export class AppModule {}
