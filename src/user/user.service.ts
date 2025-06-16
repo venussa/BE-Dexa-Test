@@ -6,6 +6,7 @@ import { format, startOfDay, endOfDay } from 'date-fns';
 import { User } from './user.entity';
 import { Attendance } from '../attendance/attendance.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UserService {
@@ -106,6 +107,26 @@ export class UserService {
             const salt = await bcrypt.genSalt();
             user.password = await bcrypt.hash(dto.newPassword, salt);
         }
+
+        return this.userRepo.save(user);
+    }
+
+    async createUser(dto: CreateUserDto) {
+
+        const emailExists = await this.userRepo.findOne({ where: { email: dto.email } });
+        if (emailExists) throw new BadRequestException('Email is already in use');
+
+        const phoneExists = await this.userRepo.findOne({ where: { phone: dto.phone } });
+        if (phoneExists) throw new BadRequestException('Phone number is already in use');
+
+        const salt = await bcrypt.genSalt();
+        const hashedPassword = await bcrypt.hash(dto.password, salt);
+
+        const user = this.userRepo.create({
+            ...dto,
+            password: hashedPassword,
+            role: 'USER',
+        });
 
         return this.userRepo.save(user);
     }

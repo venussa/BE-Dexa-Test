@@ -15,7 +15,7 @@ export class UpdateUserDto {
     @Matches(/\S/, { message: 'Name cannot be empty or spaces only' })
     name?: string;
 
-    @IsDefined({ message: 'Name is required' })
+    @IsDefined({ message: 'Password is required' })
     @IsNumberString()
     @Matches(/^[0-9]+$/, { message: 'Phone number must contain digits only' })
     phone?: string;
