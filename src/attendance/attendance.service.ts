@@ -70,12 +70,11 @@ export class AttendanceService {
 
   async getHistory(user: any, query: any) {
     const { page = 1, perPage = 10, date, startDate, endDate, userId } = query;
-    const take = +perPage;
-    const skip = (+page - 1) * take;
 
+    const isAdmin = user.role === 'ADMIN';
     const where: any = {};
 
-    if (user.role !== 'ADMIN') {
+    if (!isAdmin) {
       where.user = { id: user.id };
     } else if (userId) {
       where.user = { id: userId };
@@ -88,15 +87,55 @@ export class AttendanceService {
       where.timestamp = Between(new Date(startDate), new Date(endDate));
     }
 
-    const [data, total] = await this.attendanceRepo.findAndCount({
-      where, take, skip, relations: ['user'], order: { timestamp: 'DESC' }
+    const rawData = await this.attendanceRepo.find({
+      where,
+      relations: ['user'],
+      order: { timestamp: 'ASC' },
     });
+
+
+    const groupedMap = new Map();
+    for (const item of rawData) {
+      const dateKey = item.timestamp.toISOString().split('T')[0];
+      const groupKey = `${item.user.id}-${dateKey}`;
+
+      if (!groupedMap.has(groupKey)) {
+        groupedMap.set(groupKey, {
+          user: {
+            id: item.user.id,
+            email: item.user.email,
+            name: item.user.name,
+            position: item.user.position,
+            phone: item.user.phone,
+            photoUrl: item.user.photoUrl,
+          },
+          checkin: null,
+          checkout: null,
+        });
+      }
+
+      const group = groupedMap.get(groupKey);
+      if (item.type === 'CHECKIN') {
+        group.checkin = item.timestamp;
+      }
+      if (item.type === 'CHECKOUT') {
+        group.checkout = item.timestamp;
+      }
+    }
+
+    const groupedArray = Array.from(groupedMap.values());
+    const total = groupedArray.length;
+
+    const pagedData = groupedArray.slice(
+      (+page - 1) * +perPage,
+      (+page - 1) * +perPage + +perPage
+    );
 
     return {
       currentPage: +page,
-      perPage: take,
+      perPage: +perPage,
       total,
-      data,
+      data: pagedData,
     };
   }
 }
