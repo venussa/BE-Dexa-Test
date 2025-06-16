@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between } from 'typeorm';
-import { startOfDay, endOfDay } from 'date-fns';
+import { format, startOfDay, endOfDay } from 'date-fns';
 import { User } from './user.entity';
 import { Attendance } from '../attendance/attendance.entity';
 
@@ -31,6 +31,8 @@ export class UserService {
 
         return {
             ...result,
+            createdAt: format(result.createdAt, 'yyyy-MM-dd HH:mm:ss'),
+            updatedAt: format(result.updatedAt, 'yyyy-MM-dd HH:mm:ss'),
             attendanceStatus: latestAttendance?.type || 'NONE',
         };
     }

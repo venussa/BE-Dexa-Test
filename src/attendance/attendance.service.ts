@@ -1,10 +1,10 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Between, Repository } from 'typeorm';
-import { startOfDay, endOfDay } from 'date-fns';
 import { Attendance } from './attendance.entity';
 import { User } from '../user/user.entity';
-import { format, startOfMonth, endOfMonth } from 'date-fns';
+import { format, startOfMonth, endOfMonth, startOfDay, endOfDay } from 'date-fns';
+
 @Injectable()
 export class AttendanceService {
   constructor(
@@ -33,9 +33,15 @@ export class AttendanceService {
     const attendance = this.attendanceRepo.create({
       user: { id: userId },
       type: 'CHECKIN',
+      timestamp: new Date,
     });
 
-    return this.attendanceRepo.save(attendance);
+    const save = await this.attendanceRepo.save(attendance);
+
+    return {
+      ...save,
+      timestamp: format(save.timestamp, 'yyyy-MM-dd HH:mm:ss')
+    };
   }
 
   async checkOut(userId: string) {
@@ -68,16 +74,26 @@ export class AttendanceService {
     const attendance = this.attendanceRepo.create({
       user: { id: userId },
       type: 'CHECKOUT',
+      timestamp: new Date,
     });
 
-    return this.attendanceRepo.save(attendance);
+    const save = await this.attendanceRepo.save(attendance);
+
+    return {
+      ...save,
+      timestamp: format(save.timestamp, 'yyyy-MM-dd HH:mm:ss')
+    };
   }
 
   async getHistory(user: any, query: any) {
-    const { page = 1, perPage = 10, date, startDate, endDate, userId } = query;
+    const { page = 1, perPage = 10, startDate: start, endDate: end, userId } = query;
 
     const isAdmin = user.role === 'ADMIN';
     const where: any = {};
+    const today = new Date();
+    const startDate = start ? new Date(start) : startOfMonth(today);
+    const endDate = end ? new Date(end) : endOfMonth(today);
+    const sortOrder = query.sort === 'asc' ? 'asc' : 'desc';
 
     if (!isAdmin) {
       where.user = { id: user.id };
@@ -85,11 +101,8 @@ export class AttendanceService {
       where.user = { id: userId };
     }
 
-    if (date) {
-      const d = new Date(date);
-      where.timestamp = Between(startOfDay(d), endOfDay(d));
-    } else if (startDate && endDate) {
-      where.timestamp = Between(new Date(startDate), new Date(endDate));
+    if (startDate && endDate) {
+      where.timestamp = Between(startOfDay(startDate), endOfDay(endDate));
     }
 
     const rawData = await this.attendanceRepo.find({
@@ -101,7 +114,7 @@ export class AttendanceService {
 
     const groupedMap = new Map();
     for (const item of rawData) {
-      const dateKey = item.timestamp.toISOString().split('T')[0];
+      const dateKey = format(item.timestamp, 'yyyy-MM-dd');
       const groupKey = `${item.user.id}-${dateKey}`;
 
       if (!groupedMap.has(groupKey)) {
@@ -114,7 +127,7 @@ export class AttendanceService {
             phone: item.user.phone,
             photoUrl: item.user.photoUrl,
           },
-          dateKey,
+          date: dateKey,
           checkin: null,
           checkout: null,
         });
@@ -122,14 +135,18 @@ export class AttendanceService {
 
       const group = groupedMap.get(groupKey);
       if (item.type === 'CHECKIN') {
-        group.checkin = item.timestamp;
+        group.checkin = format(item.timestamp, 'yyyy-MM-dd HH:mm:ss');
       }
       if (item.type === 'CHECKOUT') {
-        group.checkout = item.timestamp;
+        group.checkout = format(item.timestamp, 'yyyy-MM-dd HH:mm:ss');
       }
     }
 
-    const groupedArray = Array.from(groupedMap.values());
+    const groupedArray = Array.from(groupedMap.values()).sort((a, b) => {
+      if (sortOrder === 'asc') return a.date.localeCompare(b.date);
+      else return b.date.localeCompare(a.date);
+    });
+
     const total = groupedArray.length;
 
     const pagedData = groupedArray.slice(
@@ -146,8 +163,7 @@ export class AttendanceService {
   }
 
   async getSummary(user: any, query: any) {
-
-    const { page = 1, perPage = 10, start, end, userId } = query;
+    const { page = 1, perPage = 10, startDate: start, endDate: end, userId } = query;
     const today = new Date();
     const startDate = start ? new Date(start) : startOfMonth(today);
     const endDate = end ? new Date(end) : endOfMonth(today);
@@ -198,7 +214,7 @@ export class AttendanceService {
 
       if (!summaryMap.has(key)) {
         summaryMap.set(key, {
-          date,
+          date: date,
           checkin: null,
           checkout: null,
           userId: record.user.id,
@@ -206,8 +222,9 @@ export class AttendanceService {
       }
 
       const group = summaryMap.get(key);
-      if (record.type === 'CHECKIN') group.checkin = record.timestamp;
-      if (record.type === 'CHECKOUT') group.checkout = record.timestamp;
+      if (record.type === 'CHECKIN') group.checkin = format(record.timestamp, 'yyyy-MM-dd HH:mm:ss');
+
+      if (record.type === 'CHECKOUT') group.checkout = format(record.timestamp, 'yyyy-MM-dd HH:mm:ss');
     }
 
     const data = users.map((u) => {
