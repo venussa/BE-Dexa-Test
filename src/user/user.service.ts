@@ -121,7 +121,10 @@ export class UserService {
         };
 
       sendLogging(activity);
-      sendNotification(activity);
+
+      if (currentUser.role !== 'ADMIN') {
+        sendNotification(activity);
+      }
 
       return saved;
     }
