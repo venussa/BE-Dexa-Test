@@ -41,10 +41,12 @@ export const logDbConfig: DataSourceOptions = {
 };
 
 export const typeOrmModuleLogConfig: TypeOrmModuleOptions = {
+  name: process.env.LOG_DB_NAME,
   ...logDbConfig,
 };
 
 export const dataSourceLogConfig: DataSourceOptions = {
+  name: process.env.LOG_DB_NAME,
   ...logDbConfig,
   migrations: ['./src/migrations/log/*.ts'],
 };

@@ -7,6 +7,7 @@ import { User } from './user.entity';
 import { Attendance } from '../attendance/attendance.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
+import { sendLogging, sendNotification } from '../rabbitmq/rabbitmq.helper';
 
 @Injectable()
 export class UserService {
@@ -47,6 +48,7 @@ export class UserService {
 
         const user = await this.userRepo.findOne({ where: { id: targetUserId } });
         if (!user) throw new NotFoundException('User not found');
+        const oldData = user;
         
         if (dto.email) {
             if (currentUser.role !== 'ADMIN') {
@@ -108,7 +110,20 @@ export class UserService {
             user.password = await bcrypt.hash(dto.newPassword, salt);
         }
 
-        return this.userRepo.save(user);
+        const saved = await this.userRepo.save(user);
+
+        const activity = {
+            id: user.id,
+            email: user.email,
+            action: 'UPDATE',
+            before: oldData,
+            after: saved,
+        };
+
+      sendLogging(activity);
+      sendNotification(activity);
+
+      return saved;
     }
 
     async createUser(dto: CreateUserDto) {
