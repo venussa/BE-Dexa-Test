@@ -1,0 +1,714 @@
+{
+	"info": {
+		"_postman_id": "d06d37b8-a2dc-4852-9e7b-db09584c3a42",
+		"name": "Dexa",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18429884",
+		"_collection_link": "https://restless-crescent-341441.postman.co/workspace/Icube-Training~e4277eb2-39ac-458d-8ffb-e09e3255d67d/collection/18429884-d06d37b8-a2dc-4852-9e7b-db09584c3a42?action=share&source=collection_link&creator=18429884"
+	},
+	"item": [
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Manage User",
+					"item": [
+						{
+							"name": "Get Users",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/api/user?page=1&perPage=2",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"user"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1",
+											"description": "default = 1"
+										},
+										{
+											"key": "perPage",
+											"value": "2",
+											"description": "default = 10"
+										},
+										{
+											"key": "userId",
+											"value": "71bf3a03-cf9b-4ea4-9c78-6be8ba183c99",
+											"disabled": true
+										},
+										{
+											"key": "name",
+											"value": "will",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create User",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"steavenroger@gmail.com\",\r\n    \"name\": \"Steaven Roger\",\r\n    \"phone\": \"082298538214\",\r\n    \"photoUrl\": \"https://github.com\",\r\n    \"password\": \"Inuyasha_56!\",\r\n    \"position\": \"Staff IT\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/user/create",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"user",
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Edit User",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"steavenroger@gmail.com\",\r\n    \"name\": \"Steaven Roger\",\r\n    \"phone\": \"082298538214\",\r\n    \"photoUrl\": \"https://github.com\",\r\n    \"position\": \"Staff IT\",\r\n    \"oldPassword\": \"\",\r\n    \"newPassword\": \"\",\r\n    \"confirmPassword\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/user/edit/96da42ba-6d13-40b8-a4c2-2c7104278641",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"user",
+										"edit",
+										"96da42ba-6d13-40b8-a4c2-2c7104278641"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete User",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/user/delete/31ec65c3-0dd4-4e33-ba16-6fe5ce4c69f1",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"user",
+										"delete",
+										"31ec65c3-0dd4-4e33-ba16-6fe5ce4c69f1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Attendance",
+					"item": [
+						{
+							"name": "Summary",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/api/attendance/summary?page=1&perPage=5&sort=asc",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"attendance",
+										"summary"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1",
+											"description": "default = 1"
+										},
+										{
+											"key": "perPage",
+											"value": "5",
+											"description": "default = 10"
+										},
+										{
+											"key": "startDate",
+											"value": "2025-06-17",
+											"description": "Default Current month",
+											"disabled": true
+										},
+										{
+											"key": "endDate",
+											"value": "2025-06-18",
+											"description": "Default Current month",
+											"disabled": true
+										},
+										{
+											"key": "userId",
+											"value": "71bf3a03-cf9b-4ea4-9c78-6be8ba183c99",
+											"description": "Only for admin",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "asc",
+											"description": "asc / desc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "History",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/api/attendance/history?page=1&perPage=5&sort=asc",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"attendance",
+										"history"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "perPage",
+											"value": "5"
+										},
+										{
+											"key": "startDate",
+											"value": "2025-06-10",
+											"disabled": true
+										},
+										{
+											"key": "endDate",
+											"value": "2025-06-16",
+											"disabled": true
+										},
+										{
+											"key": "userId",
+											"value": "31ec65c3-0dd4-4e33-ba16-6fe5ce4c69f1",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "asc"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Ger My Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/user/profile",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit My Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Mr Crab\",\r\n    \"phone\": \"082298538212\",\r\n    \"photoUrl\": \"https://google.com\",\r\n    \"oldPassword\": \"s\",\r\n    \"newPassword\": \"asdasdasdasda\",\r\n    \"confirmPassword\": \"asdasdasdasdasd\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/user/profile/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"profile",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Attendance",
+					"item": [
+						{
+							"name": "Check In",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/api/attendance/checkin",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"attendance",
+										"checkin"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Check Out",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/api/attendance/checkout",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"attendance",
+										"checkout"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Summary",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/api/attendance/summary?page=1&perPage=5&sort=asc",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"attendance",
+										"summary"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1",
+											"description": "default = 1"
+										},
+										{
+											"key": "perPage",
+											"value": "5",
+											"description": "default = 10"
+										},
+										{
+											"key": "startDate",
+											"value": "2025-06-17",
+											"description": "Default Current month",
+											"disabled": true
+										},
+										{
+											"key": "endDate",
+											"value": "2025-06-18",
+											"description": "Default Current month",
+											"disabled": true
+										},
+										{
+											"key": "userId",
+											"value": "71bf3a03-cf9b-4ea4-9c78-6be8ba183c99",
+											"description": "Only for admin",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "asc",
+											"description": "asc / desc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "History",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/api/attendance/history?page=1&perPage=5&sort=asc",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"attendance",
+										"history"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "perPage",
+											"value": "5"
+										},
+										{
+											"key": "startDate",
+											"value": "2025-06-10",
+											"disabled": true
+										},
+										{
+											"key": "endDate",
+											"value": "2025-06-16",
+											"disabled": true
+										},
+										{
+											"key": "userId",
+											"value": "31ec65c3-0dd4-4e33-ba16-6fe5ce4c69f1",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "asc"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Get My Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/user/profile",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit My Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Yudha Romadhon\",\r\n    \"phone\": \"082298524561\",\r\n    \"photoUrl\": \"https://instagram.com\",\r\n    \"oldPassword\": \"\",\r\n    \"newPassword\": \"\",\r\n    \"confirmPassword\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/user/profile/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"profile",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const dataToken = pm.response.json();\r",
+							"pm.collectionVariables.set(\"token\", dataToken.access_token);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"steavenroger@gmail.com\",\r\n  \"password\": \"Inuyasha_56!\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/auth/login",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": ""
+		}
+	]
+}
