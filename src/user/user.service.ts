@@ -3,11 +3,11 @@ import { Injectable, NotFoundException, ForbiddenException, BadRequestException 
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between } from 'typeorm';
 import { format, startOfDay, endOfDay } from 'date-fns';
-import { User } from './user.entity';
-import { Attendance } from '../attendance/attendance.entity';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { CreateUserDto } from './dto/create-user.dto';
-import { sendLogging, sendNotification } from '../rabbitmq/rabbitmq.helper';
+import { User } from '@src/user/user.entity';
+import { Attendance } from '@src/attendance/attendance.entity';
+import { UpdateUserDto } from '@src/user/dto/update-user.dto';
+import { CreateUserDto } from '@src/user/dto/create-user.dto';
+import { sendLogging, sendNotification } from '@src/rabbitmq/rabbitmq.helper';
 
 @Injectable()
 export class UserService {

@@ -1,53 +1,53 @@
 import { Controller, Logger } from '@nestjs/common';
 import { Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
-import { Queue } from './queue.enum';
-import { LoggingService } from '../logging/logging.service';
+import { Queue } from '@src/rabbitmq/queue.enum';
+import { LoggingService } from '@src/logging/logging.service';
 
 @Controller()
 export class Consumer {
-  private readonly logger = new Logger(Consumer.name);
-  private readonly MAX_RETRIES = 5;
+    private readonly logger = new Logger(Consumer.name);
+    private readonly MAX_RETRIES = 5;
 
-  constructor(private loggingService: LoggingService) {}
+    constructor(private loggingService: LoggingService) {}
 
-  @EventPattern(Queue.LOGGING)
-  async handleLogging(@Payload() data: any, @Ctx() context: RmqContext) {
-    const channel = context.getChannelRef();
-    const originalMsg = context.getMessage();
-    const retries = originalMsg.properties.headers['x-retries'] || 0;
+    @EventPattern(Queue.LOGGING)
+    async handleLogging(@Payload() data: any, @Ctx() context: RmqContext) {
+        const channel = context.getChannelRef();
+        const originalMsg = context.getMessage();
+        const retries = originalMsg.properties.headers['x-retries'] || 0;
 
-    try {
-        
-      await this.processMessage(data);
-      channel.ack(originalMsg);
-    } catch (err) {
-      this.logger.error(`Failed to process message. Retry #${retries}. Error: ${err.message}`);
+        try {
+            await this.processMessage(data);
+            channel.ack(originalMsg);
+        } catch (err) {
 
-      if (retries < this.MAX_RETRIES) {
+            this.logger.error(`Failed to process message. Retry #${retries}. Error: ${err.message}`);
 
-        const newHeaders = {
-          ...originalMsg.properties.headers,
-          'x-retries': retries + 1,
-        };
+            if (retries < this.MAX_RETRIES) {
 
-        channel.sendToQueue(
-          originalMsg.fields.routingKey,
-          originalMsg.content,
-          {
-            headers: newHeaders,
-            persistent: true,
-          },
-        );
+                const newHeaders = {
+                    ...originalMsg.properties.headers,
+                    'x-retries': retries + 1,
+                };
 
-        channel.ack(originalMsg);
-      } else {
-        this.logger.warn(`Max retries reached (${this.MAX_RETRIES}). Dropping message.`);
-        channel.ack(originalMsg);
-      }
+                channel.sendToQueue(
+                    originalMsg.fields.routingKey,
+                    originalMsg.content,
+                    {
+                        headers: newHeaders,
+                        persistent: true,
+                    },
+                );
+
+                channel.ack(originalMsg);
+            } else {
+                this.logger.warn(`Max retries reached (${this.MAX_RETRIES}). Dropping message.`);
+                channel.ack(originalMsg);
+            }
+        }
     }
-  }
 
-  async processMessage(data: any) {
-    return this.loggingService.saveLog(data);
-  }
+    async processMessage(data: any) {
+        return this.loggingService.saveLog(data);
+    }
 }

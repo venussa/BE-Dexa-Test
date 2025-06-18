@@ -1,35 +1,37 @@
-import { Queue } from './queue.enum';
-import { RabbitmqService } from './rabbitmq.service';
+import { Queue } from '@src/rabbitmq/queue.enum';
+import { RabbitmqService } from '@src/rabbitmq/rabbitmq.service';
 
 let rabbitmqServiceInstance: RabbitmqService;
 
 export function registerRabbitmqHelper(service: RabbitmqService) {
-  rabbitmqServiceInstance = service;
+    rabbitmqServiceInstance = service;
 }
 
 export async function sendLogging(payload: any) {
-  if (!rabbitmqServiceInstance) {
-    throw new Error('RabbitmqService is not registered. Call registerRabbitmqHelper() first.');
-  }
-  const client = await rabbitmqServiceInstance.getClient(Queue.LOGGING);
-  const isConnected = (client as any)?.client;
-  if (!isConnected) {
-    await client.connect();
-  }
+    if (!rabbitmqServiceInstance) {
+        throw new Error('RabbitmqService is not registered. Call registerRabbitmqHelper() first.');
+    }
 
-  client.emit(Queue.LOGGING, payload);
+    const client = await rabbitmqServiceInstance.getClient(Queue.LOGGING);
+    const isConnected = (client as any)?.client;
+
+    if (!isConnected) {
+        await client.connect();
+    }
+
+    client.emit(Queue.LOGGING, payload);
 }
 
 export async function sendNotification(payload: any) {
-  if (!rabbitmqServiceInstance) {
-    throw new Error('RabbitmqService is not registered. Call registerRabbitmqHelper() first.');
-  }
+    if (!rabbitmqServiceInstance) {
+        throw new Error('RabbitmqService is not registered. Call registerRabbitmqHelper() first.');
+    }
 
-  const client = await rabbitmqServiceInstance.getClient(Queue.NOTIFICATION);
-  const isConnected = (client as any)?.client;
-  if (!isConnected) {
-    await client.connect();
-  }
+    const client = await rabbitmqServiceInstance.getClient(Queue.NOTIFICATION);
+    const isConnected = (client as any)?.client;
+    if (!isConnected) {
+        await client.connect();
+    }
 
-  client.emit(Queue.NOTIFICATION, payload);
+    client.emit(Queue.NOTIFICATION, payload);
 }

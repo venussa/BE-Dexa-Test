@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
-import { AppModule } from './app.module';
+import { AppModule } from '@src/app.module';
 import { Transport } from '@nestjs/microservices';
-import { Queue } from './rabbitmq/queue.enum';
+import { Queue } from '@src/rabbitmq/queue.enum';
 
 
 async function bootstrap() {

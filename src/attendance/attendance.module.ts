@@ -1,14 +1,16 @@
 import { Module } from '@nestjs/common';
-import { AttendanceService } from './attendance.service';
-import { AttendanceController } from './attendance.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Attendance } from './attendance.entity';
-import { User } from '../user/user.entity';
+import { AttendanceService } from '@src/attendance/attendance.service';
+import { AttendanceController } from '@src/attendance/attendance.controller';
+import { Attendance } from '@src/attendance/attendance.entity';
+import { User } from '@src/user/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Attendance, User])],
-  controllers: [AttendanceController],
-  providers: [AttendanceService],
+    imports: [
+      TypeOrmModule.forFeature([Attendance, User])
+    ],
+    controllers: [AttendanceController],
+    providers: [AttendanceService],
 })
 
 export class AttendanceModule {}

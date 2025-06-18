@@ -2,22 +2,22 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, Index } from 
 
 @Entity('logging')
 export class Logging {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
 
-  @Index()
-  @Column()
-  userId: string;
+    @Index()
+    @Column()
+    userId: string;
 
-  @Column()
-  action: string;
+    @Column()
+    action: string;
 
-  @Column({ type: 'jsonb', nullable: true })
-  before?: any;
+    @Column({ type: 'jsonb', nullable: true })
+    before?: any;
 
-  @Column({ type: 'jsonb', nullable: true })
-  after?: any;
+    @Column({ type: 'jsonb', nullable: true })
+    after?: any;
 
-  @CreateDateColumn()
-  createdAt: Date;
+    @CreateDateColumn()
+    createdAt: Date;
 }

@@ -1,4 +1,4 @@
 export enum Queue {
-  LOGGING = 'logging_queue',
-  NOTIFICATION = 'notification_queue',
+    LOGGING = 'logging_queue',
+    NOTIFICATION = 'notification_queue',
 }
