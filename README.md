@@ -8,6 +8,7 @@ API Collection https://github.com/venussa/BE-Dexa-Test/blob/master/rest-api.post
 2. Postgres
 3. Rabbit MQ
 4. Firebase
+   You need to download the service account file from the Firebase Console and place it in `./src/config/service-account.json`
 
 ## APPLICATION SETUP
 1. git clone https://github.com/venussa/BE-Dexa-Test.git
