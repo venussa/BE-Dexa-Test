@@ -3,7 +3,7 @@
 
 API Collection https://github.com/venussa/BE-Dexa-Test/blob/master/rest-api.postman_collection.json
 
-## REQUIRED
+## REQUIREMENT
 1. Node JS
 2. Postgres
 3. Rabbit MQ
