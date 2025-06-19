@@ -49,7 +49,13 @@ export class UserController {
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles('ADMIN')
     @Get()
-    getAllUsers(@Query() query: any) {
+    async getAllUsers(@Query() query: any) {
         return this.userService.getAllUsers(query);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('save-fcm-token')
+    async saveDeviceToken(@Body() body: { userId: string; token: string }) {
+        return this.userService.saveDeviceToken(body.userId, body.token);
     }
 }

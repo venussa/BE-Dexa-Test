@@ -6,6 +6,7 @@ import { AttendanceModule } from '@src/attendance/attendance.module';
 import { UserModule } from '@src/user/user.module';
 import { RabbitmqModule } from '@src/rabbitmq/rabbitmq.module';
 import { LoggingModule } from '@src/logging/logging.module';
+import { FcmModule } from './fcm/fcm.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { LoggingModule } from '@src/logging/logging.module';
     UserModule,
     RabbitmqModule,
     LoggingModule,
+    FcmModule,
   ],
 })
 export class AppModule {}

@@ -117,6 +117,7 @@ export class UserService {
         const activity = {
             id: user.id,
             email: user.email,
+            fcmToken: user.fcmToken,
             action: 'UPDATE',
             before: oldData,
             after: saved,
@@ -211,5 +212,15 @@ export class UserService {
             total,
             data,
         };
+    }
+
+    async saveDeviceToken(userId: string, token: string) {
+        const user = await this.userRepo.findOneBy({ id: userId });
+        if (!user) throw new NotFoundException("User not found");
+
+        user.fcmToken = token;
+        await this.userRepo.save(user);
+        
+        return true;
     }
 }
