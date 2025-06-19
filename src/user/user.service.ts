@@ -90,10 +90,12 @@ export class UserService {
         }
 
         if (dto.photoUrl) user.photoUrl = dto.photoUrl;
+        if (dto.address) user.address = dto.address;
+        if (dto.bio) user.bio = dto.bio;
 
         if (dto.oldPassword || dto.newPassword || dto.confirmPassword) {
 
-            if (currentUser.role !== 'ADMIN') {
+            if (currentUser.role !== 'ADMIN' || (currentUser.role === 'ADMIN' && currentUser.id === targetUserId)) {
                 if (!dto.oldPassword || !dto.newPassword || !dto.confirmPassword) {
                 throw new BadRequestException('Incomplete password update fields');
                 }
@@ -186,6 +188,8 @@ export class UserService {
                 'user.phone',
                 'user.position',
                 'user.photoUrl',
+                'user.address',
+                'user.bio',
             ])
             .orderBy('user.createdAt', 'DESC')
             .skip(skip)

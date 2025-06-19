@@ -18,10 +18,9 @@ export class AttendanceController {
 
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles('USER')
-    @UseGuards(JwtAuthGuard)
     @Post('checkout')
     async checkOut(@User('id') userId: string) {
-         this.attendanceService.checkOut(userId);
+        return this.attendanceService.checkOut(userId);
     }
 
     @UseGuards(JwtAuthGuard)

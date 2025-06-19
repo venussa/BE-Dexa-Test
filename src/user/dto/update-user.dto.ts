@@ -36,4 +36,12 @@ export class UpdateUserDto {
     @ValidateIf(o => o.oldPassword || o.newPassword || o.confirmPassword)
     @IsString()
     confirmPassword?: string;
+
+    @IsOptional()
+    @IsString()
+    bio?: string;
+
+    @IsOptional()
+    @IsString()
+    address?: string;
 }
