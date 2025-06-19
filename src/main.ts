@@ -37,6 +37,18 @@ async function bootstrap() {
     },
   });
 
+  app.connectMicroservice({
+    transport: Transport.RMQ,
+    options: {
+      urls: [rabbitMqUrl],
+      queue: Queue.NOTIFICATION,
+      queueOptions: {
+        durable: true,
+      },
+      noAck: false,
+    },
+  });
+
   await app.startAllMicroservices();
   
   await app.listen(process.env.PORT ?? 3000);

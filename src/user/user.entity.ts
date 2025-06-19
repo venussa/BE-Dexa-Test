@@ -37,4 +37,7 @@ export class User {
 
     @UpdateDateColumn()
     updatedAt: Date;
+
+    @Column({ type: 'text', nullable: true, default: null })
+    fcmToken: string | null;
 }
