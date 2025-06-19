@@ -125,6 +125,8 @@ export class AttendanceService {
                         position: item.user.position,
                         phone: item.user.phone,
                         photoUrl: item.user.photoUrl,
+                        address: item.user.address,
+                        bio: item.user.bio,
                     },
                     date: dateKey,
                     checkin: null,
@@ -242,6 +244,8 @@ export class AttendanceService {
                 position: u.position,
                 phone: u.phone,
                 photoUrl: u.photoUrl,
+                adress: u.address,
+                bio: u.bio,
                 attendance_summary: summary,
             };
         });

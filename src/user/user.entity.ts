@@ -14,11 +14,17 @@ export class User {
     @Column()
     position: string;
 
-    @Column()
-    phone: string;
+    @Column({ type: 'text', nullable: true, default: null })
+    address: string | null;
+
+    @Column({ type: 'text', nullable: true, default: null })
+    bio: string | null;
+
+    @Column({ type: 'text', nullable: true, default: null })
+    photoUrl: string | null;
 
     @Column()
-    photoUrl: string;
+    phone: string;
 
     @Column()
     password: string;
